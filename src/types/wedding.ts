@@ -55,7 +55,14 @@ export interface MediaConfig {
   heroVideo?: string;
   heroVideoPoster?: string;
   music?: {
-    src: string; // mp3/m4a
+    /**
+     * 1 file hoặc nhiều file cùng bài hát ở định dạng khác nhau để trình duyệt
+     * tự chọn định dạng hỗ trợ (fallback tuần tự nếu định dạng đầu lỗi/không hỗ trợ).
+     * Hỗ trợ: .mp3 .m4a .mp4 (audio-only) .aac .wav .ogg
+     * vd: '/assets/audio/wedding-song.mp3'
+     * hoặc: ['/assets/audio/wedding-song.m4a', '/assets/audio/wedding-song.mp3']
+     */
+    src: string | string[];
     title: string;
     autoStartOnOpen: boolean;
   };

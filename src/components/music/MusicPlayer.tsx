@@ -6,7 +6,7 @@ import { useAudioPlayer } from '../../hooks/useAudioPlayer';
  * Không tự động phát trước tương tác người dùng — tránh bị mobile browser chặn autoplay.
  */
 export function MusicPlayer({ title }: { title?: string }) {
-  const { isPlaying, isReady, play, pause } = useAudioPlayer();
+  const { isPlaying, isReady, hasError, play, pause } = useAudioPlayer();
 
   if (!isReady) return null;
 
@@ -17,20 +17,29 @@ export function MusicPlayer({ title }: { title?: string }) {
       initial={{ opacity: 0, scale: 0.8 }}
       animate={{ opacity: 1, scale: 1 }}
       transition={{ delay: 0.4 }}
-      aria-label={isPlaying ? `Tạm dừng nhạc: ${title ?? ''}` : `Phát nhạc: ${title ?? ''}`}
-      className="fixed bottom-5 right-5 z-40 flex h-11 w-11 items-center justify-center rounded-full
-                 bg-background/90 text-primary shadow-md backdrop-blur border border-border
-                 hover:bg-background transition-colors"
+      aria-label={
+        hasError
+          ? 'Không tìm thấy file nhạc'
+          : isPlaying
+            ? `Tạm dừng nhạc: ${title ?? ''}`
+            : `Phát nhạc: ${title ?? ''}`
+      }
+      title={hasError ? 'Không load được file nhạc — kiểm tra console (F12) để xem chi tiết' : undefined}
+      className={`fixed bottom-5 right-5 z-40 flex h-11 w-11 items-center justify-center rounded-full
+                 bg-background/90 shadow-md backdrop-blur border transition-colors
+                 hover:bg-background ${hasError ? 'border-red-300 text-red-400' : 'border-border text-primary'}`}
     >
       <span
-        className={`h-4 w-4 rounded-full border-2 border-primary flex items-center justify-center ${
-          isPlaying ? 'animate-spin-slow' : ''
+        className={`h-4 w-4 rounded-full border-2 flex items-center justify-center ${
+          hasError ? 'border-red-400' : 'border-primary'
         }`}
-        style={isPlaying ? { animation: 'spin 4s linear infinite' } : undefined}
+        style={isPlaying && !hasError ? { animation: 'spin 4s linear infinite' } : undefined}
       >
-        <span className="h-1 w-1 rounded-full bg-primary" />
+        <span className={`h-1 w-1 rounded-full ${hasError ? 'bg-red-400' : 'bg-primary'}`} />
       </span>
-      <span className="sr-only">{isPlaying ? 'Đang phát nhạc' : 'Nhạc đang tắt'}</span>
+      <span className="sr-only">
+        {hasError ? 'Lỗi file nhạc' : isPlaying ? 'Đang phát nhạc' : 'Nhạc đang tắt'}
+      </span>
     </motion.button>
   );
 }

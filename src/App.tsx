@@ -5,6 +5,9 @@ import { AudioPlayerProvider } from './hooks/useAudioPlayer';
 import { Hero } from './components/hero/Hero';
 import { MusicPlayer } from './components/music/MusicPlayer';
 import { WeddingDateSection } from './components/date/WeddingDateSection';
+import { StorySection } from './components/story/StorySection';
+import { CoupleSection } from './components/couple/CoupleSection';
+import { VenueSection } from './components/venue/VenueSection';
 import { ComingSoonSection } from './components/common/ComingSoonSection';
 
 function App() {
@@ -20,13 +23,14 @@ function App() {
       <div className="font-body text-foreground">
         <Hero couple={wedding.couple} weddingInfo={wedding.wedding} media={wedding.media} />
 
-        {/* Giai đoạn tiếp theo: Our Story, Couple, Venue, Gallery, Invitation, RSVP, Wishes, Gift, Final */}
-        <ComingSoonSection name="Our Story" />
-        <ComingSoonSection name="Couple (Bride & Groom)" />
+        <StorySection items={wedding.story} />
+        <CoupleSection groom={wedding.couple.groom} bride={wedding.couple.bride} />
 
         <WeddingDateSection dateTime={wedding.wedding.dateTime} />
 
-        <ComingSoonSection name="Wedding Venue" />
+        <VenueSection venue={wedding.venue} dateTime={wedding.wedding.dateTime} />
+
+        {/* Giai đoạn tiếp theo: Gallery, Invitation, RSVP, Wishes, Gift, Final */}
         <ComingSoonSection name="Gallery" />
         <ComingSoonSection name="Wedding Invitation" />
         <ComingSoonSection name="RSVP" />

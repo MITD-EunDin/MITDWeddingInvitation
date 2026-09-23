@@ -91,6 +91,11 @@ export const wedding: WeddingData = {
     heroVideo: '/assets/video/hero.mp4',
     heroVideoPoster: '/assets/images/hero.jpg',
     music: {
+      // Có thể để 1 file duy nhất (string) hoặc mảng nhiều định dạng cùng bài
+      // để trình duyệt tự chọn/fallback, vd:
+      // src: ['/assets/audio/wedding-song.m4a', '/assets/audio/wedding-song.mp3'],
+      // QUAN TRỌNG: tên file dưới đây phải khớp CHÍNH XÁC (kể cả hoa/thường)
+      // với file bạn đặt trong public/assets/audio/
       src: '/assets/audio/wedding-song.mp3',
       title: 'A Thousand Years',
       autoStartOnOpen: true,
