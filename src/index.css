@@ -1,0 +1,49 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  --color-background: #FBF8F3;
+  --color-background-alt: #F3EDE2;
+  --color-foreground: #3A2E27;
+  --color-foreground-muted: #7A6D63;
+  --color-primary: #B99364;
+  --color-primary-contrast: #FFFFFF;
+  --color-secondary: #C9A66B;
+  --color-border: #E6DCC8;
+  --font-display: 'Cormorant Garamond', 'Playfair Display', serif;
+  --font-body: 'Jost', 'Inter', sans-serif;
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+body {
+  background-color: var(--color-background);
+  color: var(--color-foreground);
+  font-family: var(--font-body);
+  overflow-x: hidden;
+}
+
+h1, h2, h3, h4, .font-display {
+  font-family: var(--font-display);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+}
+
+/* focus state cho accessibility */
+a:focus-visible,
+button:focus-visible,
+input:focus-visible,
+textarea:focus-visible {
+  outline: 2px solid var(--color-primary);
+  outline-offset: 2px;
+}
