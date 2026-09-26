@@ -12,7 +12,7 @@ export const wedding: WeddingData = {
       fullName: 'Nguyễn Văn A',
       displayName: 'Văn A',
       description: 'Con trai của ông Nguyễn Văn B và bà Trần Thị C',
-      photo: '/assets/images/groom.jpg',
+      photo: '/assets/images/wedding1.jpg',
       familyInfo: {
         fatherName: 'Nguyễn Văn B',
         motherName: 'Trần Thị C',
@@ -22,7 +22,7 @@ export const wedding: WeddingData = {
       fullName: 'Trần Thị D',
       displayName: 'Thị D',
       description: 'Con gái của ông Trần Văn E và bà Lê Thị F',
-      photo: '/assets/images/bride.jpg',
+      photo: '/assets/images/wedding2.jpg',
       familyInfo: {
         fatherName: 'Trần Văn E',
         motherName: 'Lê Thị F',
@@ -55,7 +55,7 @@ export const wedding: WeddingData = {
       title: 'Lần đầu gặp gỡ',
       description:
         'Chúng tôi gặp nhau lần đầu trong một buổi cà phê cuối tuần, và không ngờ đó lại là khởi đầu của một câu chuyện dài.',
-      image: '/assets/images/story-1.jpg',
+      image: '/assets/images/wedding3.jpg',
     },
     {
       id: 'story-2',
@@ -63,7 +63,7 @@ export const wedding: WeddingData = {
       title: 'Ngày hẹn hò đầu tiên',
       description:
         'Buổi tối hôm ấy dưới ánh đèn thành phố, chúng tôi biết rằng mình đã tìm thấy một nửa còn lại.',
-      image: '/assets/images/story-2.jpg',
+      image: '/assets/images/wedding4.jpg',
     },
     {
       id: 'story-3',
@@ -71,7 +71,7 @@ export const wedding: WeddingData = {
       title: 'Lời cầu hôn',
       description:
         'Một lời cầu hôn bất ngờ giữa hoàng hôn, và một cái gật đầu đầy hạnh phúc.',
-      image: '/assets/images/story-3.jpg',
+      image: '/assets/images/wedding1.jpg',
     },
   ],
 
@@ -89,7 +89,7 @@ export const wedding: WeddingData = {
     heroBackgroundType: 'image',
     heroImage: '/assets/images/hero.jpg',
     heroVideo: '/assets/video/hero.mp4',
-    heroVideoPoster: '/assets/images/hero.jpg',
+    heroVideoPoster: '/assets/images/wedding1.jpg',
     music: {
       // Có thể để 1 file duy nhất (string) hoặc mảng nhiều định dạng cùng bài
       // để trình duyệt tự chọn/fallback, vd:
@@ -180,6 +180,6 @@ export const wedding: WeddingData = {
   seo: {
     siteTitle: 'Văn A & Thị D | Wedding Invitation',
     description: 'Thiệp mời đám cưới Văn A & Thị D — 20.12.2026',
-    ogImage: '/assets/images/hero.jpg',
+    ogImage: '/assets/images/wedding1.jpg',
   },
 };
