@@ -12,8 +12,13 @@ interface Props {
 
 export function GallerySection({ images }: Props) {
   const [index, setIndex] = useState(-1);
+  const [loadedImages, setLoadedImages] = useState<Set<string>>(new Set());
 
   if (images.length === 0) return null;
+
+  const handleLoad = (id: string) => {
+    setLoadedImages((prev) => new Set(prev).add(id));
+  };
 
   return (
     <section className="bg-background-alt px-6 py-20 sm:py-28">
@@ -31,24 +36,46 @@ export function GallerySection({ images }: Props) {
             key={img.id}
             direction="scale"
             delay={(i % 6) * 0.05}
-            className={`overflow-hidden rounded-lg sm:mb-4 sm:break-inside-avoid ${
+            className={`overflow-hidden rounded-xl sm:mb-4 sm:break-inside-avoid relative group ${
               img.featured ? 'col-span-2 sm:col-span-1' : ''
             }`}
           >
             <button
               type="button"
               onClick={() => setIndex(i)}
-              className="block w-full"
+              className="block w-full h-full focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2 focus-visible:ring-offset-background-alt rounded-xl"
               aria-label={`Xem ảnh lớn: ${img.alt}`}
             >
+              {/* Loading placeholder */}
+              <div
+                className="absolute inset-0 bg-background z-0 flex items-center justify-center"
+                aria-hidden="true"
+              >
+                <div className="w-8 h-8 border-2 border-primary/30 border-t-primary rounded-full animate-spin" />
+              </div>
+
               <img
                 src={img.thumbnail ?? img.src}
                 alt={img.alt}
                 loading="lazy"
                 width={img.width}
                 height={img.height}
-                className="h-full w-full object-cover transition-transform duration-300 hover:scale-105"
+                onLoad={() => handleLoad(img.id)}
+                className={`
+                  h-full w-full object-cover rounded-xl
+                  transition-all duration-500 ease-out
+                  ${loadedImages.has(img.id) ? 'opacity-100 scale-100' : 'opacity-0 scale-105'}
+                  group-hover:scale-[1.03] group-hover:shadow-xl
+                `}
               />
+
+              {/* Overlay gradient + icon */}
+              <div className="absolute inset-0 bg-gradient-to-t from-black/40 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300 rounded-xl pointer-events-none" />
+              <div className="absolute bottom-4 left-4 right-4 translate-y-4 opacity-0 group-hover:translate-y-0 group-hover:opacity-100 transition-all duration-300 pointer-events-none">
+                <div className="mx-auto max-w-xs px-4 py-2 bg-white/90 backdrop-blur-sm rounded-full text-center text-sm font-medium text-foreground shadow-lg">
+                  Nhấn để xem to
+                </div>
+              </div>
             </button>
           </Reveal>
         ))}

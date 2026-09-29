@@ -1,4 +1,4 @@
-import type { WeddingData } from '../types/wedding';
+import type { WeddingData, GalleryImage } from '../types/wedding';
 
 /**
  * ĐÂY LÀ FILE DUY NHẤT BẠN CẦN SỬA để tạo một thiệp cưới mới.
@@ -6,6 +6,20 @@ import type { WeddingData } from '../types/wedding';
  * Ảnh/nhạc/video thật đặt trong: public/assets/images, public/assets/audio, public/assets/video
  * rồi trỏ đường dẫn dạng "/assets/images/ten-file.jpg".
  */
+
+// Helper gọn cho gallery
+function g(file: string, alt: string, opts: { featured?: boolean; height?: number } = {}): GalleryImage {
+  return {
+    id: `gallery-${file}`,
+    src: `/assets/images/${file}`,
+    thumbnail: `/assets/images/${file}`,
+    alt,
+    width: 1200,
+    height: opts.height ?? 900,
+    featured: opts.featured ?? false,
+  };
+}
+
 export const wedding: WeddingData = {
   couple: {
     groom: {
@@ -75,15 +89,12 @@ export const wedding: WeddingData = {
     },
   ],
 
-  gallery: Array.from({ length: 8 }).map((_, i) => ({
-    id: `gallery-${i + 1}`,
-    src: `/assets/images/gallery-${i + 1}.jpg`,
-    thumbnail: `/assets/images/gallery-${i + 1}.jpg`,
-    alt: `Ảnh cưới ${i + 1}`,
-    width: 1200,
-    height: i % 3 === 0 ? 1500 : 900,
-    featured: i === 0 || i === 5,
-  })),
+  gallery: [
+    g('wedding1.jpg', 'Ảnh cưới 1', { featured: true }),
+    g('wedding2.jpg', 'Ảnh cưới 2'),
+    g('wedding3.jpg', 'Ảnh cưới 3', { height: 1500 }),
+    g('wedding4.jpg', 'Ảnh cưới 4', { featured: true }),
+  ],
 
   media: {
     heroBackgroundType: 'image',
@@ -146,16 +157,16 @@ export const wedding: WeddingData = {
     enabled: true,
     note: 'Sự hiện diện của bạn là món quà quý giá nhất. Nếu bạn muốn gửi lời chúc mừng bằng một món quà nhỏ, gia đình xin trân trọng đón nhận.',
     groomAccount: {
-      bankName: 'Vietcombank',
+      bankName: 'Vietinbank',
       accountName: 'NGUYEN VAN A',
       accountNumber: '0123456789',
-      qrImage: '/assets/images/qr-groom.png',
+      qrImage: '/assets/images/qr.jpg',
     },
     brideAccount: {
-      bankName: 'Techcombank',
+      bankName: 'Vietinbank',
       accountName: 'TRAN THI D',
       accountNumber: '9876543210',
-      qrImage: '/assets/images/qr-bride.png',
+      qrImage: '/assets/images/qr.jpg',
     },
   },
 
