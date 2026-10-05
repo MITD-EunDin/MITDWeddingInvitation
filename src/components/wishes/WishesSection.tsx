@@ -3,7 +3,7 @@ import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { z } from 'zod';
 import { Reveal } from '../common/Reveal';
-import { getWishesService } from '../../services/wishesService';
+import { getRealtimeWishesService } from '../../services/realtime';
 import type { WishesConfig, WishItem } from '../../types/wedding';
 
 const schema = z.object({
@@ -17,10 +17,7 @@ interface Props {
 }
 
 export function WishesSection({ config }: Props) {
-  const service = useMemo(
-    () => getWishesService(config.apiEndpoint, config.mockData),
-    [config.apiEndpoint, config.mockData],
-  );
+  const [service, setService] = useState<Awaited<ReturnType<typeof getRealtimeWishesService>> | null>(null);
   const [wishes, setWishes] = useState<WishItem[]>([]);
   const [loading, setLoading] = useState(true);
 
@@ -31,27 +28,37 @@ export function WishesSection({ config }: Props) {
     formState: { errors, isSubmitting },
   } = useForm<FormValues>({ resolver: zodResolver(schema), defaultValues: { name: '', message: '' } });
 
+  // Initialize real-time service
   useEffect(() => {
     let active = true;
-    setLoading(true);
-    service.list().then((data) => {
-      if (active) {
-        setWishes(data);
-        setLoading(false);
-      }
+    getRealtimeWishesService(config.mockData).then((s) => {
+      if (active) setService(s);
     });
-    return () => {
-      active = false;
-    };
+    return () => { active = false; };
+  }, [config.mockData]);
+
+  // Subscribe to real-time updates
+  useEffect(() => {
+    if (!service) return;
+    setLoading(true);
+    const unsubscribe = service.subscribe((data) => {
+      setWishes(data);
+      setLoading(false);
+    });
+    return () => unsubscribe();
   }, [service]);
 
   if (!config.enabled) return null;
 
   const onSubmit = async (values: FormValues) => {
+    if (!service) return;
     const wish = await service.add(values);
+    // Real-time sẽ tự cập nhật, nhưng ta có thể optimistic update
     setWishes((prev) => [wish, ...prev]);
     reset();
   };
+
+  const latestWish = wishes[0] ?? null;
 
   return (
     <section className="bg-background px-6 py-20 sm:py-28">
@@ -60,6 +67,9 @@ export function WishesSection({ config }: Props) {
         <h2 className="font-display mt-3 text-center text-3xl text-foreground sm:text-4xl">
           Lời Chúc Từ Mọi Người
         </h2>
+        <p className="mt-2 text-center text-sm text-foreground-muted">
+          Đã có <span className="font-medium text-primary">{wishes.length}</span> lời chúc
+        </p>
       </Reveal>
 
       <Reveal direction="up" delay={0.1} className="mx-auto mt-10 max-w-lg">
@@ -93,9 +103,13 @@ export function WishesSection({ config }: Props) {
         </form>
       </Reveal>
 
-      <div className="mx-auto mt-14 grid max-w-4xl grid-cols-1 gap-4 sm:grid-cols-2">
+      <div className="mx-auto mt-14 grid max-w-4xl grid-cols-1 gap-4 sm:grid-cols-2" id="wishes">
         {loading ? (
           <p className="col-span-full text-center text-sm text-foreground-muted">Đang tải...</p>
+        ) : wishes.length === 0 ? (
+          <p className="col-span-full text-center text-sm text-foreground-muted">
+            Chưa có lời chúc nào. Hãy là người đầu tiên!
+          </p>
         ) : (
           wishes.map((wish, i) => (
             <Reveal
@@ -106,6 +120,9 @@ export function WishesSection({ config }: Props) {
             >
               <p className="text-sm leading-relaxed text-foreground">{wish.message}</p>
               <p className="mt-3 text-xs uppercase tracking-wide text-primary">— {wish.name}</p>
+              <time className="mt-2 block text-[11px] text-foreground-muted">
+                {new Date(wish.createdAt).toLocaleString('vi-VN')}
+              </time>
             </Reveal>
           ))
         )}
