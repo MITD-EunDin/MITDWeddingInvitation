@@ -33,7 +33,7 @@ function App() {
           <FallingHearts
             count={20}
             colors={['#E8B4B4', '#B99364', '#F5D0D0', '#D4A5A5', '#FFB6C1', '#FFA0A0']}
-            className="fixed inset-0 z-0 pointer-events-none"
+            className="fixed inset-0 z-50 pointer-events-none"
           />
 
           {/* Subtle particles for extra atmosphere */}
@@ -41,7 +41,7 @@ function App() {
             count={8}
             primaryColor={wedding.theme.colors.primary}
             secondaryColor={wedding.theme.colors.secondary}
-            className="fixed inset-0 z-0 pointer-events-none"
+            className="fixed inset-0 z-10 pointer-events-none"
           />
 
           <Hero couple={wedding.couple} weddingInfo={wedding.wedding} media={wedding.media} />
