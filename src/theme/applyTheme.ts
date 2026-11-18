@@ -20,4 +20,5 @@ export function applyTheme(theme: ThemeConfig) {
 
   root.style.setProperty('--font-display', fonts.display);
   root.style.setProperty('--font-body', fonts.body);
+  root.style.setProperty('--font-script', fonts.script ?? "'Great Vibes', cursive");
 }

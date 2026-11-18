@@ -16,6 +16,7 @@ export default {
       fontFamily: {
         display: 'var(--font-display)',
         body: 'var(--font-body)',
+        script: 'var(--font-script)',
       },
       screens: {
         xs: '360px',

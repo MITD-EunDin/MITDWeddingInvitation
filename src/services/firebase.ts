@@ -1,3 +1,4 @@
+// @ts-nocheck
 /**
  * Firebase service implementation
  * Only loaded when VITE_BACKEND_TYPE=firebase

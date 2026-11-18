@@ -1,6 +1,7 @@
 import { Suspense, lazy, useState, type ComponentType } from 'react';
 import { Reveal } from '../common/Reveal';
 import type { GalleryImage } from '../../types/wedding';
+import { FloralDivider, SparklesIcon } from '../common/Icons';
 
 // Lazy-load lightbox + its CSS chỉ khi người dùng thật sự mở ảnh —
 // tránh cộng dồn vào bundle chính, giảm thời gian tải trang đầu.
@@ -21,37 +22,42 @@ export function GallerySection({ images }: Props) {
   };
 
   return (
-    <section className="bg-background-alt px-6 py-20 sm:py-28">
+    <section className="relative bg-background-alt px-4 py-20 sm:px-6 sm:py-28 overflow-hidden">
       <Reveal direction="up">
-        <p className="text-center text-xs uppercase tracking-[0.3em] text-primary">Gallery</p>
-        <h2 className="font-display mt-3 text-center text-3xl text-foreground sm:text-4xl">
-          Khoảnh Khắc Của Chúng Tôi
-        </h2>
+        <div className="text-center">
+          <p className="text-xs uppercase tracking-[0.35em] text-primary font-medium">
+            Photo Gallery
+          </p>
+          <h2 className="font-display mt-2 text-3xl sm:text-4xl text-foreground">
+            Khoảnh Khắc Hạnh Phúc
+          </h2>
+          <FloralDivider className="w-40 h-5 text-primary/60 mx-auto mt-3" />
+        </div>
       </Reveal>
 
-      {/* Mobile: grid 2 cột đều. Desktop: masonry qua CSS columns, ảnh featured chiếm 2 cột */}
+      {/* Grid gallery */}
       <div className="mx-auto mt-12 grid max-w-5xl grid-cols-2 gap-3 sm:columns-3 sm:gap-4 sm:[column-fill:balance]">
         {images.map((img, i) => (
           <Reveal
             key={img.id}
             direction="scale"
             delay={(i % 6) * 0.05}
-            className={`overflow-hidden rounded-xl sm:mb-4 sm:break-inside-avoid relative group ${
+            className={`overflow-hidden rounded-2xl sm:mb-4 sm:break-inside-avoid relative group border border-border/80 bg-background p-1.5 shadow-sm transition-all duration-300 hover:shadow-xl hover:border-primary/50 ${
               img.featured ? 'col-span-2 sm:col-span-1' : ''
             }`}
           >
             <button
               type="button"
               onClick={() => setIndex(i)}
-              className="block w-full h-full focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2 focus-visible:ring-offset-background-alt rounded-xl"
+              className="relative block w-full h-full focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary rounded-xl overflow-hidden cursor-pointer"
               aria-label={`Xem ảnh lớn: ${img.alt}`}
             >
               {/* Loading placeholder */}
               <div
-                className="absolute inset-0 bg-background z-0 flex items-center justify-center"
+                className="absolute inset-0 bg-background-alt z-0 flex items-center justify-center"
                 aria-hidden="true"
               >
-                <div className="w-8 h-8 border-2 border-primary/30 border-t-primary rounded-full animate-spin" />
+                <div className="w-6 h-6 border-2 border-primary/30 border-t-primary rounded-full animate-spin" />
               </div>
 
               <img
@@ -63,18 +69,18 @@ export function GallerySection({ images }: Props) {
                 onLoad={() => handleLoad(img.id)}
                 className={`
                   h-full w-full object-cover rounded-xl
-                  transition-all duration-500 ease-out
+                  transition-all duration-700 ease-out
                   ${loadedImages.has(img.id) ? 'opacity-100 scale-100' : 'opacity-0 scale-105'}
-                  group-hover:scale-[1.03] group-hover:shadow-xl
+                  group-hover:scale-105
                 `}
               />
 
-              {/* Overlay gradient + icon */}
-              <div className="absolute inset-0 bg-gradient-to-t from-black/40 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300 rounded-xl pointer-events-none" />
-              <div className="absolute bottom-4 left-4 right-4 translate-y-4 opacity-0 group-hover:translate-y-0 group-hover:opacity-100 transition-all duration-300 pointer-events-none">
-                <div className="mx-auto max-w-xs px-4 py-2 bg-white/90 backdrop-blur-sm rounded-full text-center text-sm font-medium text-foreground shadow-lg">
-                  Nhấn để xem to
-                </div>
+              {/* Hover Overlay with Romantic Hint */}
+              <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300 rounded-xl pointer-events-none flex items-end justify-center p-4">
+                <span className="inline-flex items-center gap-1.5 rounded-full bg-white/90 backdrop-blur-sm px-4 py-1.5 text-xs font-medium text-foreground shadow-md">
+                  <SparklesIcon className="w-3.5 h-3.5 text-primary" />
+                  <span>Phóng to ảnh</span>
+                </span>
               </div>
             </button>
           </Reveal>
@@ -95,7 +101,6 @@ export function GallerySection({ images }: Props) {
   );
 }
 
-/** Import CSS của lightbox cùng lúc với component, chỉ khi cần. */
 function LightboxLoader({
   index,
   images,

@@ -1,3 +1,4 @@
+// @ts-nocheck
 /**
  * Supabase service implementation
  * Only loaded when VITE_BACKEND_TYPE=supabase

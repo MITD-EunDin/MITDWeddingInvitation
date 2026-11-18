@@ -150,7 +150,7 @@ export async function getRealtimeWishesService(mockData: WishItem[]): Promise<Re
   }
 
   console.info(`[Realtime] Using ${backend} backend for wishes`);
-  return wishesServiceCache;
+  return wishesServiceCache!;
 }
 
 export async function getRealtimeHeartsService(initialCount: number): Promise<RealtimeHeartsService> {
@@ -169,7 +169,7 @@ export async function getRealtimeHeartsService(initialCount: number): Promise<Re
   }
 
   console.info(`[Realtime] Using ${backend} backend for hearts`);
-  return heartsServiceCache;
+  return heartsServiceCache!;
 }
 
 export async function getRealtimeRsvpService(): Promise<RealtimeRsvpService> {
@@ -188,7 +188,7 @@ export async function getRealtimeRsvpService(): Promise<RealtimeRsvpService> {
   }
 
   console.info(`[Realtime] Using ${backend} backend for RSVP`);
-  return rsvpServiceCache;
+  return rsvpServiceCache!;
 }
 
 export function resetRealtimeServices() {
