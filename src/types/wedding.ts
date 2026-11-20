@@ -129,6 +129,7 @@ export interface ThemeConfig {
   fonts: {
     display: string; // font tiêu đề, script/serif
     body: string;
+    script?: string; // font thư pháp calligraphy/wedding script
   };
 }
 

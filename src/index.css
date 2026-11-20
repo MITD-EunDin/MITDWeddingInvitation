@@ -3,16 +3,18 @@
 @tailwind utilities;
 
 :root {
-  --color-background: #FBF8F3;
-  --color-background-alt: #F3EDE2;
-  --color-foreground: #3A2E27;
-  --color-foreground-muted: #7A6D63;
-  --color-primary: #B99364;
+  --color-background: #FDFBF7;
+  --color-background-alt: #F5EFE6;
+  --color-foreground: #2B211B;
+  --color-foreground-muted: #6B5A50;
+  --color-primary: #B88E56;
   --color-primary-contrast: #FFFFFF;
-  --color-secondary: #C9A66B;
-  --color-border: #E6DCC8;
+  --color-secondary: #CCA46E;
+  --color-border: #E8DCB8;
+  --color-seal: #8B2635;
   --font-display: 'Cormorant Garamond', 'Playfair Display', serif;
   --font-body: 'Jost', 'Inter', sans-serif;
+  --font-script: 'Great Vibes', cursive;
 }
 
 html {
@@ -24,19 +26,46 @@ body {
   color: var(--color-foreground);
   font-family: var(--font-body);
   overflow-x: hidden;
+  letter-spacing: 0.01em;
 }
 
 h1, h2, h3, h4, .font-display {
   font-family: var(--font-display);
 }
 
-@media (prefers-reduced-motion: reduce) {
-  *, *::before, *::after {
-    animation-duration: 0.01ms !important;
-    animation-iteration-count: 1 !important;
-    transition-duration: 0.01ms !important;
-    scroll-behavior: auto !important;
-  }
+.font-script {
+  font-family: var(--font-script);
+}
+
+/* Gradient vàng hoàng gia cao cấp */
+.text-gold-gradient {
+  background: linear-gradient(135deg, #E6C280 0%, #B88E56 50%, #D4A86A 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+.bg-gold-gradient {
+  background: linear-gradient(135deg, #E6C280 0%, #B88E56 50%, #D4A86A 100%);
+}
+
+.bg-seal-gradient {
+  background: radial-gradient(circle at 35% 35%, #A83244 0%, #8B2635 60%, #681A26 100%);
+}
+
+/* Viền thiệp chỉ vàng thanh lịch */
+.wedding-card-border {
+  position: relative;
+  border: 1px solid var(--color-border);
+  box-shadow: 0 10px 30px -10px rgba(184, 142, 86, 0.15), 0 4px 6px -2px rgba(43, 33, 27, 0.05);
+}
+
+.wedding-card-border::before {
+  content: '';
+  position: absolute;
+  inset: 5px;
+  border: 1px dashed rgba(184, 142, 86, 0.45);
+  border-radius: inherit;
+  pointer-events: none;
 }
 
 /* focus state cho accessibility */
@@ -46,4 +75,62 @@ input:focus-visible,
 textarea:focus-visible {
   outline: 2px solid var(--color-primary);
   outline-offset: 2px;
+}
+
+/* ============================================
+   Global Keyframes for Wedding Animations
+   ============================================ */
+
+@keyframes spin-slow {
+  from { transform: rotate(0deg); }
+  to { transform: rotate(360deg); }
+}
+
+@keyframes seal-pulse {
+  0%, 100% {
+    transform: scale(1);
+    box-shadow: 0 0 0 0 rgba(139, 38, 53, 0.4);
+  }
+  50% {
+    transform: scale(1.04);
+    box-shadow: 0 0 0 14px rgba(139, 38, 53, 0);
+  }
+}
+
+@keyframes float-gentle {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-8px); }
+}
+
+@keyframes shimmer {
+  0% { transform: translateX(-100%); }
+  100% { transform: translateX(100%); }
+}
+
+.animate-spin-slow {
+  animation: spin-slow 12s linear infinite;
+}
+
+.animate-seal-pulse {
+  animation: seal-pulse 2.4s ease-in-out infinite;
+}
+
+.animate-float-gentle {
+  animation: float-gentle 4s ease-in-out infinite;
+}
+
+/* Reduced motion */
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+  .animate-spin-slow,
+  .animate-seal-pulse,
+  .animate-float-gentle,
+  [style*="animation: spin"] {
+    animation: none !important;
+  }
 }

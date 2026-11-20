@@ -57,7 +57,7 @@ export const wedding: WeddingData = {
   venue: {
     name: 'Trung Tâm Hội Nghị Tiệc Cưới Riverside',
     address: '123 Đường Hoa, Quận 1, TP. Hồ Chí Minh',
-    image: '/assets/images/venue.jpg',
+    image: '/assets/images/wedding3.jpg',
     googleMapsUrl: 'https://maps.google.com/?q=Riverside+Palace+HCMC',
     session: 'Lễ Thành Hôn',
   },
@@ -98,7 +98,7 @@ export const wedding: WeddingData = {
 
   media: {
     heroBackgroundType: 'image',
-    heroImage: '/assets/images/hero.jpg',
+    heroImage: '/assets/images/wedding1.jpg',
     heroVideo: '/assets/video/hero.mp4',
     heroVideoPoster: '/assets/images/wedding1.jpg',
     music: {
@@ -121,7 +121,7 @@ export const wedding: WeddingData = {
       {
         name: 'Trung Tâm Hội Nghị Tiệc Cưới Riverside',
         address: '123 Đường Hoa, Quận 1, TP. Hồ Chí Minh',
-        image: '/assets/images/venue.jpg',
+        image: '/assets/images/wedding3.jpg',
         googleMapsUrl: 'https://maps.google.com/?q=Riverside+Palace+HCMC',
         session: 'Lễ Thành Hôn',
       },
@@ -171,20 +171,21 @@ export const wedding: WeddingData = {
   },
 
   theme: {
-    name: 'Ivory & Champagne',
+    name: 'Ivory & Champagne Gold',
     colors: {
-      background: '#FBF8F3',
-      backgroundAlt: '#F3EDE2',
-      foreground: '#3A2E27',
-      foregroundMuted: '#7A6D63',
-      primary: '#B99364', // champagne/gold
+      background: '#FDFBF7',
+      backgroundAlt: '#F5EFE6',
+      foreground: '#2B211B',
+      foregroundMuted: '#6B5A50',
+      primary: '#B88E56', // champagne gold
       primaryContrast: '#FFFFFF',
-      secondary: '#C9A66B',
-      border: '#E6DCC8',
+      secondary: '#CCA46E',
+      border: '#E8DCB8',
     },
     fonts: {
       display: "'Cormorant Garamond', 'Playfair Display', serif",
       body: "'Jost', 'Inter', sans-serif",
+      script: "'Great Vibes', cursive",
     },
   },
 

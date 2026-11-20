@@ -1,16 +1,17 @@
 import { useMemo, useState } from 'react';
-import { useForm, Controller } from 'react-hook-form';
+import { useForm, Controller, useWatch } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { z } from 'zod';
 import { Reveal } from '../common/Reveal';
 import { getRsvpService } from '../../services/rsvpService';
 import type { RsvpConfig } from '../../types/wedding';
+import { FloralDivider, EnvelopeIcon, CheckIcon, SparklesIcon } from '../common/Icons';
 
 const schema = z.object({
-  name: z.string().trim().min(2, 'Vui lòng nhập họ tên (tối thiểu 2 ký tự)'),
-  attendance: z.enum(['yes', 'no'], { error: 'Vui lòng chọn một mục' }),
+  name: z.string().trim().min(2, 'Vui lòng nhập họ và tên (tối thiểu 2 ký tự)'),
+  attendance: z.enum(['yes', 'no'], { error: 'Vui lòng chọn xác nhận tham dự' }),
   guests: z
-    .number({ error: 'Vui lòng nhập số người' })
+    .number({ error: 'Vui lòng chọn số người tham dự' })
     .int()
     .min(1, 'Tối thiểu 1 người')
     .max(10, 'Tối đa 10 người'),
@@ -38,6 +39,8 @@ export function RsvpSection({ config }: Props) {
     resolver: zodResolver(schema),
     defaultValues: { name: '', attendance: 'yes', guests: 1, message: '' },
   });
+  const attendance = useWatch({ control, name: 'attendance' });
+  const guests = useWatch({ control, name: 'guests' });
 
   if (!config.enabled) return null;
 
@@ -46,7 +49,7 @@ export function RsvpSection({ config }: Props) {
     const result = await service.submit({
       name: values.name,
       attendance: values.attendance === 'yes',
-      guests: values.guests,
+      guests: values.attendance === 'yes' ? values.guests : 0,
       message: values.message ?? '',
     });
     setResultMessage(result.message);
@@ -55,119 +58,204 @@ export function RsvpSection({ config }: Props) {
   };
 
   return (
-    <section className="bg-background-alt px-6 py-20 sm:py-28">
+    <section id="rsvp-section" className="relative bg-background-alt px-4 py-20 sm:px-6 sm:py-28 overflow-hidden">
       <Reveal direction="up" className="mx-auto max-w-lg text-center">
-        <p className="text-xs uppercase tracking-[0.3em] text-primary">RSVP</p>
-        <h2 className="font-display mt-3 text-3xl text-foreground sm:text-4xl">
+        <p className="text-xs uppercase tracking-[0.35em] text-primary font-medium">
+          R.S.V.P
+        </p>
+        <h2 className="font-display mt-2 text-3xl sm:text-4xl text-foreground">
           Xác Nhận Tham Dự
         </h2>
+        <FloralDivider className="w-40 h-5 text-primary/60 mx-auto mt-3" />
         {config.deadline && (
-          <p className="mt-2 text-xs text-foreground-muted">
-            Vui lòng phản hồi trước {new Date(config.deadline).toLocaleDateString('vi-VN')}
+          <p className="mt-2 text-xs sm:text-sm text-foreground-muted">
+            Vui lòng gửi phản hồi trước{' '}
+            <span className="font-medium text-primary">
+              {new Date(config.deadline).toLocaleDateString('vi-VN')}
+            </span>{' '}
+            để gia đình chuẩn bị chu đáo nhất.
           </p>
         )}
       </Reveal>
 
       <Reveal direction="up" delay={0.1} className="mx-auto mt-10 max-w-md">
         {status === 'success' ? (
-          <div className="rounded-xl border border-border bg-background px-6 py-8 text-center">
-            <p className="font-display text-xl text-primary">{resultMessage}</p>
+          <div className="rounded-2xl border border-primary/40 bg-background p-8 text-center shadow-xl">
+            <div className="mx-auto flex h-14 w-14 items-center justify-center rounded-full bg-green-100 text-green-600 mb-4">
+              <CheckIcon className="w-7 h-7" />
+            </div>
+            <h3 className="font-display text-2xl text-foreground font-medium">
+              Gửi Xác Nhận Thành Công!
+            </h3>
+            <p className="mt-2 text-sm text-foreground-muted leading-relaxed">
+              {resultMessage || 'Cảm ơn quý khách đã phản hồi. Sự hiện diện của quý khách là niềm vinh hạnh của gia đình!'}
+            </p>
+            <button
+              type="button"
+              onClick={() => setStatus('idle')}
+              className="mt-6 inline-flex items-center gap-1.5 rounded-full border border-primary px-6 py-2 text-xs uppercase tracking-wider text-primary hover:bg-primary hover:text-primary-contrast transition-colors"
+            >
+              Gửi phản hồi khác
+            </button>
           </div>
         ) : (
-          <form onSubmit={handleSubmit(onSubmit)} noValidate className="space-y-5">
-            <div>
-              <label htmlFor="rsvp-name" className="block text-sm text-foreground-muted">
-                Họ và tên
-              </label>
-              <input
-                id="rsvp-name"
-                type="text"
-                {...register('name')}
-                className="mt-1.5 w-full rounded-lg border border-border bg-background px-4 py-2.5 text-sm
-                           text-foreground outline-none focus:border-primary"
-                aria-invalid={Boolean(errors.name)}
-                aria-describedby={errors.name ? 'rsvp-name-error' : undefined}
-              />
-              {errors.name && (
-                <p id="rsvp-name-error" className="mt-1 text-xs text-red-500">
-                  {errors.name.message}
-                </p>
-              )}
+          <div className="rounded-2xl border border-border/80 bg-background p-6 sm:p-8 shadow-lg">
+            <div className="flex items-center gap-2 text-primary pb-3 border-b border-border/60 mb-5">
+              <EnvelopeIcon className="w-5 h-5" />
+              <h3 className="font-display text-lg text-foreground font-medium uppercase tracking-wide">
+                Phiếu Phản Hồi Hôn Lễ
+              </h3>
             </div>
 
-            <div>
-              <span className="block text-sm text-foreground-muted">Bạn có thể tham dự?</span>
-              <Controller
-                control={control}
-                name="attendance"
-                render={({ field }) => (
-                  <div className="mt-1.5 grid grid-cols-2 gap-3">
-                    {(
-                      [
-                        ['yes', 'Tham dự'],
-                        ['no', 'Không tham dự'],
-                      ] as const
-                    ).map(([value, label]) => (
+            <form onSubmit={handleSubmit(onSubmit)} noValidate className="space-y-5">
+              {/* Name */}
+              <div>
+                <label htmlFor="rsvp-name" className="block text-xs font-medium text-foreground-muted mb-1">
+                  Họ và tên của bạn <span className="text-primary">*</span>
+                </label>
+                <input
+                  id="rsvp-name"
+                  type="text"
+                  placeholder="Vd: Nguyễn Văn A & Gia đình"
+                  {...register('name')}
+                  className="w-full rounded-xl border border-border bg-background-alt px-4 py-2.5 text-sm text-foreground outline-none transition-colors focus:border-primary"
+                  aria-invalid={Boolean(errors.name)}
+                />
+                {errors.name && <p className="mt-1 text-xs text-red-500">{errors.name.message}</p>}
+              </div>
+
+              {/* Attendance */}
+              <div>
+                <span className="block text-xs font-medium text-foreground-muted mb-1.5">
+                  Bạn có thể tham dự? <span className="text-primary">*</span>
+                </span>
+                <Controller
+                  control={control}
+                  name="attendance"
+                  render={({ field }) => (
+                    <div className="grid grid-cols-2 gap-3">
                       <button
-                        key={value}
                         type="button"
-                        onClick={() => field.onChange(value)}
-                        className={`rounded-lg border px-4 py-2.5 text-sm transition-colors ${
-                          field.value === value
-                            ? 'border-primary bg-primary text-primary-contrast'
-                            : 'border-border bg-background text-foreground hover:border-primary'
+                        onClick={() => field.onChange('yes')}
+                        className={`flex items-center justify-center gap-1.5 rounded-xl border py-3 px-3 text-xs sm:text-sm font-medium transition-all cursor-pointer ${
+                          field.value === 'yes'
+                            ? 'border-primary bg-primary text-primary-contrast shadow-sm'
+                            : 'border-border bg-background-alt text-foreground hover:border-primary/60'
                         }`}
                       >
-                        {label}
+                        <SparklesIcon className="w-3.5 h-3.5" />
+                        <span>Chắc chắn tham dự</span>
                       </button>
-                    ))}
+
+                      <button
+                        type="button"
+                        onClick={() => field.onChange('no')}
+                        className={`flex items-center justify-center gap-1.5 rounded-xl border py-3 px-3 text-xs sm:text-sm font-medium transition-all cursor-pointer ${
+                          field.value === 'no'
+                            ? 'border-primary bg-primary text-primary-contrast shadow-sm'
+                            : 'border-border bg-background-alt text-foreground hover:border-primary/60'
+                        }`}
+                      >
+                        <span>Rất tiếc vắng mặt</span>
+                      </button>
+                    </div>
+                  )}
+                />
+              </div>
+
+              {/* Guests Count */}
+              {attendance === 'yes' && <div>
+                <label htmlFor="rsvp-guests" className="block text-xs font-medium text-foreground-muted mb-1.5">
+                  Số người tham dự
+                </label>
+                <Controller
+                  control={control}
+                  name="guests"
+                  render={({ field }) => (
+                    <div className="flex items-center gap-2">
+                      {[1, 2, 3].map((num) => (
+                        <button
+                          key={num}
+                          type="button"
+                          onClick={() => field.onChange(num)}
+                          className={`flex-1 h-11 rounded-xl border text-sm font-medium transition-colors cursor-pointer ${
+                            field.value === num
+                              ? 'border-primary bg-primary text-primary-contrast'
+                              : 'border-border bg-background-alt text-foreground hover:border-primary'
+                          }`}
+                        >
+                          {`${num} người`}
+                        </button>
+                      ))}
+                      <button
+                        type="button"
+                        onClick={() => field.onChange(Math.max(field.value, 4))}
+                        aria-pressed={field.value >= 4}
+                        className={`flex-1 h-11 rounded-xl border text-sm font-medium transition-colors cursor-pointer ${
+                          field.value >= 4
+                            ? 'border-primary bg-primary text-primary-contrast'
+                            : 'border-border bg-background-alt text-foreground hover:border-primary'
+                        }`}
+                      >
+                        4+ người
+                      </button>
+                    </div>
+                  )}
+                />
+                {guests >= 4 && (
+                  <div className="mt-3">
+                    <label htmlFor="rsvp-guests-custom" className="block text-xs font-medium text-foreground-muted mb-1">
+                      Số khách cụ thể (tối đa 10)
+                    </label>
+                    <Controller
+                      control={control}
+                      name="guests"
+                      render={({ field }) => (
+                        <input
+                          id="rsvp-guests-custom"
+                          type="number"
+                          min={4}
+                          max={10}
+                          value={field.value}
+                          onChange={(event) => field.onChange(Number(event.target.value))}
+                          className="w-full rounded-xl border border-border bg-background-alt px-4 py-2.5 text-sm text-foreground outline-none focus:border-primary"
+                        />
+                      )}
+                    />
                   </div>
                 )}
-              />
-            </div>
+                {errors.guests && <p className="mt-1 text-xs text-red-500">{errors.guests.message}</p>}
+              </div>}
 
-            <div>
-              <label htmlFor="rsvp-guests" className="block text-sm text-foreground-muted">
-                Số người tham dự
-              </label>
-              <input
-                id="rsvp-guests"
-                type="number"
-                min={1}
-                max={10}
-                {...register('guests', { valueAsNumber: true })}
-                className="mt-1.5 w-full rounded-lg border border-border bg-background px-4 py-2.5 text-sm
-                           text-foreground outline-none focus:border-primary"
-                aria-invalid={Boolean(errors.guests)}
-              />
-              {errors.guests && <p className="mt-1 text-xs text-red-500">{errors.guests.message}</p>}
-            </div>
+              {/* Message */}
+              <div>
+                <label htmlFor="rsvp-message" className="block text-xs font-medium text-foreground-muted mb-1">
+                  Gửi gắm lời nhắn (không bắt buộc)
+                </label>
+                <textarea
+                  id="rsvp-message"
+                  rows={3}
+                  placeholder="Lời nhắn gửi tới cô dâu chú rể..."
+                  {...register('message')}
+                  className="w-full resize-none rounded-xl border border-border bg-background-alt px-4 py-2.5 text-sm text-foreground outline-none transition-colors focus:border-primary"
+                />
+                {errors.message && <p className="mt-1 text-xs text-red-500">{errors.message.message}</p>}
+              </div>
 
-            <div>
-              <label htmlFor="rsvp-message" className="block text-sm text-foreground-muted">
-                Lời nhắn (không bắt buộc)
-              </label>
-              <textarea
-                id="rsvp-message"
-                rows={3}
-                {...register('message')}
-                className="mt-1.5 w-full resize-none rounded-lg border border-border bg-background px-4 py-2.5
-                           text-sm text-foreground outline-none focus:border-primary"
-              />
-              {errors.message && <p className="mt-1 text-xs text-red-500">{errors.message.message}</p>}
-            </div>
+              {status === 'error' && (
+                <p className="text-xs text-red-500 text-center font-medium">{resultMessage}</p>
+              )}
 
-            {status === 'error' && <p className="text-sm text-red-500">{resultMessage}</p>}
-
-            <button
-              type="submit"
-              disabled={status === 'submitting'}
-              className="w-full rounded-full bg-primary py-3 text-sm tracking-wide text-primary-contrast
-                         transition-opacity hover:opacity-90 disabled:opacity-60"
-            >
-              {status === 'submitting' ? 'Đang gửi...' : 'Gửi Phản Hồi'}
-            </button>
-          </form>
+              <button
+                type="submit"
+                disabled={status === 'submitting'}
+                className="w-full inline-flex items-center justify-center gap-2 rounded-full bg-primary py-3 text-xs uppercase tracking-widest text-primary-contrast transition-all duration-300 hover:bg-[#9F7A48] hover:shadow-lg disabled:opacity-60 cursor-pointer"
+              >
+                <span>{status === 'submitting' ? 'Đang gửi...' : 'Gửi Xác Nhận Tham Dự'}</span>
+                <span aria-hidden="true">→</span>
+              </button>
+            </form>
+          </div>
         )}
       </Reveal>
     </section>
