@@ -4,6 +4,39 @@ import { useAudioPlayer } from '../../hooks/useAudioPlayer';
 import { useToast } from '../../hooks/useToast';
 import { HeartIcon, MusicIcon, SparklesIcon } from './Icons';
 
+/** Compact shortcuts to the sections guests most often need. */
+export function FloatingQuickLinks() {
+  const [open, setOpen] = useState(false);
+
+  return (
+    <div className="fixed bottom-6 left-5 z-40">
+      {open && (
+        <nav aria-label="Đi nhanh đến nội dung" className="mb-3 grid min-w-44 gap-1 rounded-2xl border border-border bg-background/95 p-2 shadow-xl backdrop-blur-md">
+          {[
+            ['#venue-section', 'Địa điểm'],
+            ['#rsvp-section', 'Xác nhận tham dự'],
+            ['#wishes', 'Gửi lời chúc'],
+          ].map(([href, label]) => (
+            <a key={href} href={href} onClick={() => setOpen(false)} className="rounded-xl px-3 py-2.5 text-sm text-foreground transition-colors hover:bg-background-alt hover:text-primary focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary">
+              {label}
+            </a>
+          ))}
+        </nav>
+      )}
+      <button
+        type="button"
+        onClick={() => setOpen((value) => !value)}
+        aria-expanded={open}
+        aria-label={open ? 'Đóng lối tắt' : 'Mở lối tắt'}
+        className="flex min-h-11 items-center gap-2 rounded-full border border-border bg-background/95 px-4 text-xs font-medium text-foreground shadow-xl backdrop-blur-md transition-colors hover:border-primary hover:text-primary"
+      >
+        <span aria-hidden="true">☰</span>
+        <span>Đi nhanh</span>
+      </button>
+    </div>
+  );
+}
+
 interface FloatingHeartProps {
   /** Tổng số lượt thả tim */
   totalHearts?: number;

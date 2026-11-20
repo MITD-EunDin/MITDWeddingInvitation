@@ -15,7 +15,7 @@ import { RsvpSection } from './components/rsvp/RsvpForm';
 import { GiftSection } from './components/gift/GiftSection';
 import { FinalSection } from './components/final/FinalSection';
 import { Particles, FallingHearts } from './components/common/Particles';
-import { FloatingMusic, FloatingHeart } from './components/common/FloatingActions';
+import { FloatingMusic, FloatingHeart, FloatingQuickLinks } from './components/common/FloatingActions';
 
 function App() {
   useEffect(() => {
@@ -90,6 +90,7 @@ function App() {
           {/* Floating Controls: Music Player & Love Heart Tap */}
           <FloatingMusic position="top-right" />
           <FloatingHeart position="bottom-right" totalHearts={128} />
+          <FloatingQuickLinks />
         </div>
       </AudioPlayerProvider>
     </ToastProvider>

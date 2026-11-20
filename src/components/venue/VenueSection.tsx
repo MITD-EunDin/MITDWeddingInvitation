@@ -31,7 +31,7 @@ export function VenueSection({ venue, dateTime }: Props) {
   ];
 
   return (
-    <section className="relative bg-background-alt px-4 py-20 sm:px-6 sm:py-28 overflow-hidden">
+    <section id="venue-section" className="relative bg-background-alt px-4 py-20 sm:px-6 sm:py-28 overflow-hidden scroll-mt-6">
       <Reveal direction="up">
         <div className="text-center">
           <p className="text-xs uppercase tracking-[0.35em] text-primary font-medium">

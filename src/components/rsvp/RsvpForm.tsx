@@ -1,5 +1,5 @@
 import { useMemo, useState } from 'react';
-import { useForm, Controller } from 'react-hook-form';
+import { useForm, Controller, useWatch } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { z } from 'zod';
 import { Reveal } from '../common/Reveal';
@@ -39,6 +39,8 @@ export function RsvpSection({ config }: Props) {
     resolver: zodResolver(schema),
     defaultValues: { name: '', attendance: 'yes', guests: 1, message: '' },
   });
+  const attendance = useWatch({ control, name: 'attendance' });
+  const guests = useWatch({ control, name: 'guests' });
 
   if (!config.enabled) return null;
 
@@ -47,7 +49,7 @@ export function RsvpSection({ config }: Props) {
     const result = await service.submit({
       name: values.name,
       attendance: values.attendance === 'yes',
-      guests: values.guests,
+      guests: values.attendance === 'yes' ? values.guests : 0,
       message: values.message ?? '',
     });
     setResultMessage(result.message);
@@ -162,7 +164,7 @@ export function RsvpSection({ config }: Props) {
               </div>
 
               {/* Guests Count */}
-              <div>
+              {attendance === 'yes' && <div>
                 <label htmlFor="rsvp-guests" className="block text-xs font-medium text-foreground-muted mb-1.5">
                   Số người tham dự
                 </label>
@@ -171,7 +173,7 @@ export function RsvpSection({ config }: Props) {
                   name="guests"
                   render={({ field }) => (
                     <div className="flex items-center gap-2">
-                      {[1, 2, 3, 4].map((num) => (
+                      {[1, 2, 3].map((num) => (
                         <button
                           key={num}
                           type="button"
@@ -182,14 +184,48 @@ export function RsvpSection({ config }: Props) {
                               : 'border-border bg-background-alt text-foreground hover:border-primary'
                           }`}
                         >
-                          {num === 4 ? '4+ người' : `${num} người`}
+                          {`${num} người`}
                         </button>
                       ))}
+                      <button
+                        type="button"
+                        onClick={() => field.onChange(Math.max(field.value, 4))}
+                        aria-pressed={field.value >= 4}
+                        className={`flex-1 h-11 rounded-xl border text-sm font-medium transition-colors cursor-pointer ${
+                          field.value >= 4
+                            ? 'border-primary bg-primary text-primary-contrast'
+                            : 'border-border bg-background-alt text-foreground hover:border-primary'
+                        }`}
+                      >
+                        4+ người
+                      </button>
                     </div>
                   )}
                 />
+                {guests >= 4 && (
+                  <div className="mt-3">
+                    <label htmlFor="rsvp-guests-custom" className="block text-xs font-medium text-foreground-muted mb-1">
+                      Số khách cụ thể (tối đa 10)
+                    </label>
+                    <Controller
+                      control={control}
+                      name="guests"
+                      render={({ field }) => (
+                        <input
+                          id="rsvp-guests-custom"
+                          type="number"
+                          min={4}
+                          max={10}
+                          value={field.value}
+                          onChange={(event) => field.onChange(Number(event.target.value))}
+                          className="w-full rounded-xl border border-border bg-background-alt px-4 py-2.5 text-sm text-foreground outline-none focus:border-primary"
+                        />
+                      )}
+                    />
+                  </div>
+                )}
                 {errors.guests && <p className="mt-1 text-xs text-red-500">{errors.guests.message}</p>}
-              </div>
+              </div>}
 
               {/* Message */}
               <div>
